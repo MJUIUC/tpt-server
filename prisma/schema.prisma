@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  brandId     Int
+  product     String
+  year        Int
+  date        String // e.g., "March 2023"; use DateTime if you want strict dates
+  description String
+  image       String? // deprecated, use images instead
+  tags        Tag[]   @relation("ItemTags")
+  images      Image[] // relation to images
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  items Item[] @relation("ItemTags")
+}
+
+model Brand {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  archived    Boolean  @default(false)
+  items       Item[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  url       String  // S3/MinIO URL or path
+  filename  String
+  mimetype  String
+  size      Int     // bytes
+  width     Int?
+  height    Int?
+  item      Item?   @relation(fields: [itemId], references: [id])
+  itemId    Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

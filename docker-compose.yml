@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    container_name: tpt-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: tptdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  minio:
+    image: minio/minio:latest
+    container_name: tpt-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # Web UI
+    volumes:
+      - minio-data:/data
+    # Limit MinIO data volume to 1GB (Linux/macOS only, not supported on Docker Desktop for Mac/Win)
+    # Use: docker volume create --driver local --opt type=tmpfs --opt device=tmpfs --opt o=size=1g minio-data
+volumes:
+  pgdata:
+  minio-data:
