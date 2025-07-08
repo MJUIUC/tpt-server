@@ -16,6 +16,10 @@ RUN npx tsc
 
 EXPOSE 8080
 
-ENV DATABASE_URL="postgresql://postgres:trade_machine_v2_admin@192.168.1.105:5432/trade_machine_v2?schema=public"
+# DATABASE_URL and MINIO credentials are injected by docker-compose for the tpt-server service
+# Example:
+#   DATABASE_URL=postgresql://devuser:devpassword@db:5432/tptdb
+#   MINIO_ROOT_USER=minioadmin
+#   MINIO_ROOT_PASSWORD=minioadmin123
 
 CMD ["node", "dist/main/Index.js"]

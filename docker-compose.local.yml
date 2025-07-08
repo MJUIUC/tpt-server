@@ -25,19 +25,6 @@ services:
       - "9001:9001" # Web UI
     volumes:
       - minio-data:/data
-  tpt-server:
-    build: .
-    container_name: tpt-server
-    restart: unless-stopped
-    environment:
-      DATABASE_URL: "postgresql://devuser:devpassword@db:5432/tptdb"
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-      - minio
 volumes:
   pgdata:
   minio-data:

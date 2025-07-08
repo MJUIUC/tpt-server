@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import express from 'express';
+import cors from 'cors';
 import { container } from 'tsyringe';
 import LoggerFactory from './LoggerFactory';
 import FeaturedItemsController from './http_controllers/FeaturedItemsController';
@@ -9,6 +10,9 @@ async function main() {
     const logger = container.resolve(LoggerFactory).createPrivateClassLogger("Index.ts");
     
     const server = express();
+
+    // Enable CORS for all routes
+    server.use(cors());
 
     // Built-in middleware for parsing JSON request bodies
     server.use(express.json());

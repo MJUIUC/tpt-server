@@ -29,14 +29,21 @@ export default class FeaturedItemsController extends HttpApiController {
   private async getFeaturedItems(req: Request, res: Response) {
     try {
       const items = await this.prisma.item.findMany({
+        where: { featured: true },
         take: 4,
         orderBy: { createdAt: 'desc' },
         include: {
           brand: true,
           tags: true,
+          images: true, // Include related images
         },
       });
-      res.json(items);
+      // Map items to include the first image URL as 'image' for backward compatibility
+      const itemsWithImages = items.map((item: any) => ({
+        ...item,
+        image: item.images && item.images.length > 0 ? item.images[0].url : item.image || null,
+      }));
+      res.json(itemsWithImages);
     } catch (error) {
       this.logger.error('Failed to fetch featured items', error);
       res.status(500).json({ error: 'Failed to fetch featured items' });

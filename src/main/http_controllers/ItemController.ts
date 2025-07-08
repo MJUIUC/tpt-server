@@ -18,10 +18,36 @@ export default class ItemController extends HttpApiController {
   }
 
   public initRoutes(): void {
+    this.router.get('/', this.getItems.bind(this));
     this.router.get('/:id', this.getItemById.bind(this));
     this.router.post('/', this.createItem.bind(this));
     this.router.put('/:id', this.updateItem.bind(this));
     this.router.delete('/:id', this.deleteItem.bind(this));
+  }
+
+  /**
+   * GET /api/items
+   * Fetch a paginated list of items, including brand, tags, and images.
+   * Query params: ?limit=20&offset=0
+   */
+  private async getItems(req: Request, res: Response) {
+    try {
+      const limit = Math.max(1, Math.min(parseInt(req.query.limit as string) || 20, 100));
+      const offset = Math.max(0, parseInt(req.query.offset as string) || 0);
+      const [items, total] = await Promise.all([
+        this.prisma.item.findMany({
+          skip: offset,
+          take: limit,
+          orderBy: { createdAt: 'desc' },
+          include: { brand: true, tags: true, images: true },
+        }),
+        this.prisma.item.count(),
+      ]);
+      res.json({ items, total, limit, offset });
+    } catch (error) {
+      this.logger.error('Failed to fetch items', error);
+      res.status(500).json({ error: 'Failed to fetch items' });
+    }
   }
 
   /**

@@ -34,27 +34,69 @@ async function main() {
   });
 
   // Create items
-  await prisma.item.create({
+  const item1 = await prisma.item.create({
     data: {
       brandId: brand1.id,
       product: 'Eco Pre-Roll Pack',
       year: 2022,
       date: '2022-08-15',
       description: 'Sustainably packaged pre-rolls with recycled paper and soy ink.',
-      image: '/placeholder.jpg',
+      image: 'http://localhost:9000/tpt-gallery/IMG_7498.JPG', // deprecated, but keep for fallback
       tags: { connect: [{ id: tag1.id }] },
     },
   });
-  await prisma.item.create({
+  const item2 = await prisma.item.create({
     data: {
       brandId: brand2.id,
       product: 'Classic OG Jar',
       year: 2019,
       date: '2019-04-20',
       description: 'Iconic glass jar with retro 420 branding.',
-      image: '/placeholder.jpg',
+      image: 'http://localhost:9000/tpt-gallery/IMG_7501.JPG', // deprecated, but keep for fallback
       tags: { connect: [{ id: tag2.id }] },
     },
+  });
+
+  // Seed images and associate with items (using MinIO URLs)
+  await prisma.image.createMany({
+    data: [
+      {
+        url: 'http://localhost:9000/tpt-gallery/IMG_7498.JPG',
+        filename: 'IMG_7498.JPG',
+        mimetype: 'image/jpeg',
+        size: 3500000, // example size in bytes
+        width: 3000,
+        height: 4000,
+        itemId: item1.id,
+      },
+      {
+        url: 'http://localhost:9000/tpt-gallery/IMG_7501.JPG',
+        filename: 'IMG_7501.JPG',
+        mimetype: 'image/jpeg',
+        size: 3400000,
+        width: 3000,
+        height: 4000,
+        itemId: item1.id,
+      },
+      {
+        url: 'http://localhost:9000/tpt-gallery/IMG_7506.JPG',
+        filename: 'IMG_7506.JPG',
+        mimetype: 'image/jpeg',
+        size: 3300000,
+        width: 3000,
+        height: 4000,
+        itemId: item1.id,
+      },
+      {
+        url: 'http://localhost:9000/tpt-gallery/IMG_7524.JPG',
+        filename: 'IMG_7524.JPG',
+        mimetype: 'image/jpeg',
+        size: 3200000,
+        width: 3000,
+        height: 4000,
+        itemId: item2.id,
+      },
+    ]
   });
 }
 

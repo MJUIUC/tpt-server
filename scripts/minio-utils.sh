@@ -5,7 +5,10 @@
 # Set these to match your MinIO setup
 export MINIO_ENDPOINT="http://localhost:9000"
 export MINIO_ACCESS_KEY="minioadmin"
-export MINIO_SECRET_KEY="minioadmin"
+export MINIO_SECRET_KEY="minioadmin123"
+
+export AWS_ACCESS_KEY_ID="minioadmin"
+export AWS_SECRET_ACCESS_KEY="minioadmin123"
 
 # Upload a file to a bucket
 minio_upload_file() {
@@ -16,7 +19,7 @@ minio_upload_file() {
     echo "Usage: minio_upload_file <local-file-path> <bucket-name> [object-key]"
     return 1
   fi
-  aws --endpoint-url "$MINIO_ENDPOINT" s3 cp "$LOCAL_FILE" "s3://$BUCKET/$OBJECT_KEY"
+  aws --endpoint-url "$MINIO_ENDPOINT" --region us-east-1 --no-verify-ssl s3 cp "$LOCAL_FILE" "s3://$BUCKET/$OBJECT_KEY"
   if [[ $? -eq 0 ]]; then
     echo "Upload successful!"
     echo "Resource path: s3://$BUCKET/$OBJECT_KEY"
@@ -29,7 +32,7 @@ minio_upload_file() {
 
 # List all buckets
 minio_list_buckets() {
-  aws --endpoint-url "$MINIO_ENDPOINT" s3 ls
+  aws --endpoint-url "$MINIO_ENDPOINT" --region us-east-1 --no-verify-ssl s3 ls
 }
 
 # Create a bucket if it doesn't exist
@@ -39,7 +42,7 @@ minio_create_bucket() {
     echo "Usage: minio_create_bucket <bucket-name>"
     return 1
   fi
-  aws --endpoint-url "$MINIO_ENDPOINT" s3 mb "s3://$BUCKET"
+  aws --endpoint-url "$MINIO_ENDPOINT" --region us-east-1 --no-verify-ssl s3 mb "s3://$BUCKET"
 }
 
 # Delete a bucket (must be empty)
@@ -49,7 +52,7 @@ minio_delete_bucket() {
     echo "Usage: minio_delete_bucket <bucket-name>"
     return 1
   fi
-  aws --endpoint-url "$MINIO_ENDPOINT" s3 rb "s3://$BUCKET"
+  aws --endpoint-url "$MINIO_ENDPOINT" --region us-east-1 --no-verify-ssl s3 rb "s3://$BUCKET"
 }
 
 # List objects in a bucket
@@ -59,7 +62,7 @@ minio_list_objects() {
     echo "Usage: minio_list_objects <bucket-name>"
     return 1
   fi
-  aws --endpoint-url "$MINIO_ENDPOINT" s3 ls "s3://$BUCKET/"
+  aws --endpoint-url "$MINIO_ENDPOINT" --region us-east-1 --no-verify-ssl s3 ls "s3://$BUCKET/"
 }
 
 if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then

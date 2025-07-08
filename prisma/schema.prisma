@@ -21,6 +21,9 @@ model Item {
   image       String? // deprecated, use images instead
   tags        Tag[]   @relation("ItemTags")
   images      Image[] // relation to images
+  featured    Boolean  @default(false) // Whether this item is featured
+  featuredStart DateTime? // When this item started being featured
+  featuredEnd   DateTime? // When this item stopped being featured
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
