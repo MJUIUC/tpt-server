@@ -68,6 +68,19 @@ pnpm dev
 
 The server should now be running locally. By default, it listens on `http://localhost:3000` (or as configured).
 
+### Quick Start (All-in-One Script)
+
+You can use the provided development script to automate all the above steps:
+
+```sh
+./scripts/dev.sh
+```
+
+This script will:
+- Start Docker services (Postgres & MinIO)
+- Run database migrations and seed
+- Start the development server
+
 ---
 
 ## Directory Overview
